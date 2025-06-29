@@ -6,6 +6,7 @@ docx==0.2.4
 et_xmlfile==2.0.0
 executing==2.2.0
 Flask==3.1.1
+gunicorn==23.0.0
 ipython==9.3.0
 ipython_pygments_lexers==1.1.1
 itsdangerous==2.2.0
@@ -16,6 +17,7 @@ MarkupSafe==3.0.2
 matplotlib-inline==0.1.7
 numpy==2.3.0
 openpyxl==3.1.5
+packaging==25.0
 pandas==2.3.0
 parso==0.8.4
 pexpect==4.9.0
@@ -34,4 +36,3 @@ typing_extensions==4.14.0
 tzdata==2025.2
 wcwidth==0.2.13
 Werkzeug==3.1.3
-=======
