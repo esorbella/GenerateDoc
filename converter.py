@@ -807,7 +807,7 @@ def converter(file_contents):
         doc.add_paragraph("M PMT: _________________")
         doc.add_paragraph("Reviser: _________________ No Changes Made: ______ Schedule Changes Made (if Applicable): ______ Tally Sheet Updated: ______")
 
-
+        name = name.replace(" ", "_")
         ## --- Save the document ---
         doc.save(OUTPUT_FILENAME)
         print(f"\nGenerated Word document: {OUTPUT_FILENAME}")

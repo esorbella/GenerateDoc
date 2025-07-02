@@ -1,42 +1,46 @@
-from flask import Flask, request, send_file, render_template, after_this_request
-from converter import converter
-import io
 import os
+import shutil
+import tempfile
+from converter import converter
+from flask import Flask, request, send_file, after_this_request
+from zipfile import ZipFile
 
 app = Flask(__name__)
 
-@app.route('/')
-def index():
-    return render_template('index.html')
-
 @app.route('/upload', methods=['POST'])
 def upload():
-    uploaded_file = request.files['file']
-    if not uploaded_file:
-        return "No file uploaded", 400
+    uploaded_files = request.files.getlist('file')
+    if not uploaded_files or uploaded_files[0].filename == '':
+        return "No files uploaded", 400
 
-    # Read file content (example: assume text file for this demo)
-    file_contents = uploaded_file.read()
+    # Create a temp directory to store converted files
+    temp_dir = tempfile.mkdtemp()
+    output_files = []
 
-    # 👇 Here's your "converter" line — do actual processing here
-    #processed_contents = file_contents.upper()  # EXAMPLE: convert text to uppercase
-    converter(file_contents)
-    # Return the processed file
+    for uploaded_file in uploaded_files:
+        file_contents = uploaded_file.read()
+        # 👇 Pass original filename for context, if useful
+        output_path = converter(file_contents)
+        output_files.append(output_path)
 
-    filepath = "generated_schedule.docx"
+    # Create zip file
+    zip_path = os.path.join(temp_dir, "converted_files.zip")
+    with ZipFile(zip_path, 'w') as zipf:
+        for file_path in output_files:
+            zipf.write(file_path, arcname=os.path.basename(file_path))
 
     @after_this_request
-    def remove_file(response):
+    def cleanup(response):
         try:
-            os.remove(filepath)
+            shutil.rmtree(temp_dir)
         except Exception as e:
-            app.logger.error(f"Error deleting file: {e}")
+            app.logger.error(f"Error cleaning up temp files: {e}")
         return response
 
     return send_file(
-        filepath,
+        zip_path,
         as_attachment=True,
-        download_name="generated_schedule.docx"
+        download_name="converted_files.zip"
     )
 
 if __name__ == '__main__':
