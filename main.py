@@ -2,10 +2,14 @@ import os
 import shutil
 import tempfile
 from converter import converter
-from flask import Flask, request, send_file, after_this_request
+from flask import Flask, request, send_file, after_this_request, render_template
 from zipfile import ZipFile
 
 app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 @app.route('/upload', methods=['POST'])
 def upload():
