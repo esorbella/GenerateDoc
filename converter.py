@@ -809,7 +809,8 @@ def converter(file_contents):
 
         name = name.replace(" ", "_")
         ## --- Save the document ---
-        doc.save(OUTPUT_FILENAME)
+        doc.save(name)
         print(f"\nGenerated Word document: {OUTPUT_FILENAME}")
     else:
         print("\nWord document not generated due to errors in data loading or processing.")
+    return name
